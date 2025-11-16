@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Killer Paid Ads Library | Powered by Relevance AI</title>
+    
+    <!-- Favicon - Relevance AI Logo -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%235e72e4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23825ee4;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23grad)'/%3E%3Ccircle cx='35' cy='35' r='18' fill='white' opacity='0.9'/%3E%3Ccircle cx='55' cy='55' r='22' fill='white' opacity='0.7'/%3E%3C/svg%3E">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .header {
+            background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: white;
+            margin: 0;
+            font-size: 42px;
+            font-weight: 700;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .header .subtitle {
+            color: rgba(255,255,255,0.9);
+            margin-top: 8px;
+            font-size: 16px;
+            font-weight: 400;
+        }
+        .header .powered {
+            color: rgba(255,255,255,0.7);
+            margin-top: 10px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 20px 40px 20px;
+        }
+        .controls {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        .controls h3 {
+            margin-top: 0;
+            color: #5e72e4;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-bottom: 15px;
+            padding: 12px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            border: 2px solid #e0e7ff;
+            border-radius: 8px;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #5e72e4;
+        }
+        button {
+            background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(94, 114, 228, 0.3);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(94, 114, 228, 0.4);
+        }
+        button:active {
+            transform: translateY(0px);
+        }
+        .clear-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.3);
+        }
+        .clear-btn:hover {
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        }
+        @media (max-width: 600px) {
+            button {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .image-item {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+        }
+        .image-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(94, 114, 228, 0.2);
+        }
+        .image-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .image-item .label {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 13px;
+            color: #5e72e4;
+            font-weight: 600;
+        }
+        .status {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 18px;
+            color: white;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .error-item {
+            background: #ffe5e5 !important;
+            border: 2px solid #f5576c;
+        }
+        .error-item img {
+            opacity: 0.5;
+        }
+        .error-item .label {
+            color: #f5576c !important;
+        }
+        /* Modal for full-size image view */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+        }
+        .modal-content {
+            margin: auto;
+            display: block;
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        .close {
+            position: absolute;
+            top: 20px;
+            right: 35px;
+            color: #f1f1f1;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1001;
+        }
+        .close:hover {
+            color: #bbb;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔥 Killer Paid Ads Library</h1>
+        <div class="subtitle">View all your AI-generated ad creatives in one place</div>
+        <div class="powered">Powered by Relevance AI</div>
+    </div>
+    
+    <div class="container">
+    <div class="controls">
+        <h3>Paste Image URLs (one per line):</h3>
+        <textarea id="urlInput" placeholder="https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/image1.png&#10;https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/image2.png&#10;https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/image3.png&#10;..."></textarea>
+        
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button onclick="loadImages()">📥 Load Images</button>
+            <button onclick="saveUrls()" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);">💾 Save URLs</button>
+            <button class="clear-btn" onclick="clearImages()">🗑️ Clear Display</button>
+            <button class="clear-btn" onclick="deleteSavedUrls()" style="background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);">🗑️ Delete Saved</button>
+        </div>
+        
+        <div id="savedStatus" style="margin-top: 12px; padding: 10px; background: #f8f9ff; border-radius: 8px; border-left: 4px solid #5e72e4; display: none;">
+            <p style="margin: 0; font-size: 13px; color: #666;">
+                <span id="savedStatusText"></span>
+            </p>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 12px; background: #f0fdf4; border-radius: 8px; border-left: 4px solid #38ef7d;">
+            <p style="margin: 0; font-size: 13px; color: #666; margin-bottom: 8px;">
+                💡 <strong>Local Use:</strong> Click "💾 Save URLs" to store images in your browser. They'll load automatically every time you open this page!
+            </p>
+            <p style="margin: 0; font-size: 13px; color: #666;">
+                🌐 <strong>Share a Link:</strong> Want to share just a URL? Edit the <code>PERMANENT_URLS</code> section (line ~245), save, and upload to <a href="https://app.netlify.com/drop" target="_blank" style="color: #38ef7d; font-weight: 600; text-decoration: none;">Netlify Drop ↗</a>
+            </p>
+        </div>
+    </div>
+    
+    <div class="status" id="status"></div>
+    
+    <div class="image-grid" id="imageGrid"></div>
+    </div>
+
+    <!-- Modal for full-size image -->
+    <div id="myModal" class="modal" onclick="closeModal()">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="modalImg">
+    </div>
+
+    <script>
+        // 🎯 FOR HOSTING: Paste your URLs here to embed them permanently
+        // This makes them load for EVERYONE who visits your hosted link!
+        const PERMANENT_URLS = [
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/73e77730-c937-4688-8e4f-950cb65289d0.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/50390896-ec3b-4c1d-aafa-e80ac8209a57.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/7aa981c5-b2ff-4d22-8244-01cab678206a.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/539302ce-049c-43fe-985e-05c1c8603aa3.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/8f677b11-bfe1-455b-863e-a3e4cb948411.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/28480647-dc5b-4664-8ee0-65a91d23e54c.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/1964f0c9-cfab-4ae1-b07c-9bea1b1cfd68.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/f47c154c-3c1f-474c-af71-71157208a344.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/25f8ddfb-b7a4-42b3-8ef9-1512f577dfd1.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/b0b5e456-fe86-4962-a0f5-7aa3559dfdce.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/2a201018-dcd0-4d37-90ab-3a7bf4652811.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/f0d7f90b-205c-4901-ba32-db7dd36da49f.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/94b1e1f9-06c0-48a4-b3c0-22bc2fb0dd42.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/fcab800f-f237-4f50-bb4b-304e6a3b16ef.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/fe63ab09-de11-4efc-9107-c37168f6aad9.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/4f184ce7-3136-407e-9db8-b0c34bf5b0a6.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/a3f39043-5fca-4b75-8511-b6180313a499.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/db8c0df8-ab23-4c4c-b5bb-1df2be007226.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/00c777e5-6dcf-4c3c-9d7d-754eaac83f1b.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/c2c53599-bfe7-41ea-bbac-f1a73fa0f95d.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/a69989e6-8d96-499e-a571-36bea9fdc917.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/5ca66eec-dd6f-4689-9a8a-30fc84cdb3d0.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/e253631c-c7db-4f42-971b-c6566d39b5bc.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/2f4d6dbe-1e3b-4005-9c9a-f97b0b67f460.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/64ab2672-d39b-4694-9ee0-5ab8e380e27a.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/c2024bfd-f077-4326-8d92-32df79f2ee9a.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/edb2854a-2a7f-4df1-bd03-c395c7fe203d.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/a04174dc-3b90-41b4-8f66-a71efb0883fc.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/e7a0588e-5804-4b73-843b-94b6c4e5474f.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/f7e57c13-26ad-4446-9a57-3f97125a5faf.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/12b10920-9765-4cd9-8378-9e6333655201.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/cdeadd31-c1f9-4cd5-ab95-ec36b7cce3b7.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/c65394ce-1e3b-4d28-ab1a-7f0743070408.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/becdadd6-2241-46eb-9bef-8c4024a44ecb.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/2c06842e-9326-4634-a35a-bb595a05845f.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/3a112416-554c-4ca3-870b-0185db483744.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/2610d699-dd97-43e8-8aed-f96ebfd00735.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/96db7cc8-0cee-4983-9273-d0668d7b74fd.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/45695095-f271-40f6-8828-c49cbb8a2d81.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/3036528f-39d2-403e-b63c-0b4845f735d6.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/903fae5d-befe-483a-9547-3e323d806428.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/c326ee2c-7bf9-47f9-a31e-0f31d61904ae.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/e71cff93-ae6f-4921-85a2-91152b593552.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/5ad8848d-c0bf-41f2-acc3-58b749f04083.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/e8c91562-9ec3-4371-b5db-68649a119bb8.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/c53d07fa-a76c-44ab-8611-60bc38cbfc06.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/a7ef1736-efb4-4ecf-8dc8-21b1906ab394.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/d692827c-57ab-4cb9-9959-476fa82045ee.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/cdf598e4-7126-404d-b338-bd195734eb36.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/b788d5ec-4a46-4a41-945e-0b8bbb3690e8.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/648dc14b-147d-4238-81e2-17cea4d8e09b.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/cdf294f0-0e03-4272-8f35-e1c0f668b927.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/d4d25a6d-dd8f-4517-9df5-b29b693c94d6.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/2a721e67-8028-43b7-8e4d-53f750d32881.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/0e4a0bf2-aecb-473e-a5e9-6aa79920c7c1.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/2f1fd413-a108-4037-bf2b-0895204163fe.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/824d5071-2c64-43f9-a954-b961fe085674.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/e1b5617d-f95f-43db-b830-b804736f8c3e.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/0d9a1aad-db9c-442b-a84f-c486a9d3f2b7.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/a23709c5-b0bf-4903-a9a0-81d558ef5f57.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/850c95e1-37ec-4fe8-9b8c-8699f34e7201.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/6456f220-3446-451e-877d-a0cd1eb41848.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/2fce825c-3c95-4e62-951c-6d2c18545bf8.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/02ae5370-a43a-4133-8e6b-1c9334504e02.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/e271b0a1-e405-4d5e-bcbb-61e5563cf7fa.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/deac8d18-f2e0-42e8-a45f-831782fd4a73.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/35105af4-fb12-43d7-953d-fcffc5c19ad5.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/c0370721-cb6c-4f38-b530-9d0f0f9c5ee4.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/62925df4-24c2-4faf-b968-fa4e43c41fca.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/332a2907-3a0b-47d3-a844-2e5726834769.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/cb68e8d2-219a-4650-8cd7-15427da3e573.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/550c3f38-7251-4150-9872-1c626d28a626.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/8fd21b6c-69eb-4626-a3dd-2a6d135d1a07.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/c30e6e4f-0a2b-48ae-8867-7e3dbbc0ed3a.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/367f6c2d-4f4e-45c8-928c-b81c163349cd.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/5341282e-3ac9-46a1-90d8-e0a608141cd9.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/8fbb6ce6-2710-44b1-bec2-2e364083e1c3.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/8da776a6-1a3b-435c-86e1-33a1f9fae3ce.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/05bb8404-713e-474a-bf23-c06ddf2b179a.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/16924737-ef85-4f05-adb7-dedecac57ab9.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/b9f22573-f9e2-4d0c-a319-f38d45e09e42.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/9108e924-43f6-4cb4-94b8-b0c87517be24.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/35043b08-cc0a-4f3f-b042-536cac0b3e60.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/12513bad-5bb9-494d-9065-0e49ec4b1652.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/f4c57958-9942-4b17-b035-c02d0947c9d8.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/3c52bd05-b209-44b9-af10-82d75ea2c93a.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/f3ae096a-6235-429e-904e-367d58c0ddb4.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/72476c68-2f40-4dc9-b52e-fa186bf38620.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/0e810f60-7684-4403-9935-b28ceebbafa0.png",
+            "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/37e96359-708b-4407-ad2e-7345924f6248.png"
+        ];
+        
+        // Auto-load URLs on page load (checks embedded URLs first, then saved URLs)
+        window.addEventListener('load', function() {
+            // Priority 1: Check for embedded permanent URLs (for hosted version)
+            if (PERMANENT_URLS.length > 0 && PERMANENT_URLS[0] && PERMANENT_URLS[0].startsWith('http')) {
+                document.getElementById('urlInput').value = PERMANENT_URLS.join('\n');
+                document.getElementById('status').textContent = `Loading ${PERMANENT_URLS.length} images...`;
+                displayImages(PERMANENT_URLS);
+                return;
+            }
+            
+            // Priority 2: Check for saved URLs in localStorage (for local use)
+            const savedUrls = getSavedUrls();
+            if (savedUrls.length > 0) {
+                document.getElementById('urlInput').value = savedUrls.join('\n');
+                document.getElementById('status').textContent = `Loading ${savedUrls.length} saved images...`;
+                displayImages(savedUrls);
+                showSavedStatus(`✅ ${savedUrls.length} images loaded from saved collection`, 'success');
+            }
+        });
+        
+        // Save URLs to browser storage
+        function saveUrls() {
+            const urlInput = document.getElementById('urlInput').value;
+            const urls = urlInput.split('\n').filter(url => url.trim() !== '');
+            
+            if (urls.length === 0) {
+                alert('⚠️ Please paste some URLs first!');
+                return;
+            }
+            
+            // Save to localStorage
+            localStorage.setItem('killerAdsUrls', JSON.stringify(urls));
+            localStorage.setItem('killerAdsSavedDate', new Date().toISOString());
+            
+            showSavedStatus(`✅ Successfully saved ${urls.length} image URLs! They'll load automatically next time.`, 'success');
+            
+            // Also load the images
+            displayImages(urls);
+        }
+        
+        // Get saved URLs from browser storage
+        function getSavedUrls() {
+            const saved = localStorage.getItem('killerAdsUrls');
+            if (saved) {
+                try {
+                    return JSON.parse(saved);
+                } catch (e) {
+                    console.error('Error loading saved URLs:', e);
+                    return [];
+                }
+            }
+            return [];
+        }
+        
+        // Delete saved URLs
+        function deleteSavedUrls() {
+            const savedUrls = getSavedUrls();
+            if (savedUrls.length === 0) {
+                alert('No saved URLs to delete!');
+                return;
+            }
+            
+            if (confirm(`Delete ${savedUrls.length} saved URLs? They won't load automatically anymore.`)) {
+                localStorage.removeItem('killerAdsUrls');
+                localStorage.removeItem('killerAdsSavedDate');
+                showSavedStatus('🗑️ Saved URLs deleted', 'warning');
+                clearImages();
+            }
+        }
+        
+        // Show save status message
+        function showSavedStatus(message, type) {
+            const statusDiv = document.getElementById('savedStatus');
+            const statusText = document.getElementById('savedStatusText');
+            
+            statusText.textContent = message;
+            statusDiv.style.display = 'block';
+            
+            // Change colors based on type
+            if (type === 'success') {
+                statusDiv.style.background = '#f0fdf4';
+                statusDiv.style.borderLeftColor = '#38ef7d';
+            } else if (type === 'warning') {
+                statusDiv.style.background = '#fff7ed';
+                statusDiv.style.borderLeftColor = '#ff6a00';
+            }
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                statusDiv.style.display = 'none';
+            }, 5000);
+        }
+        
+        function loadImages() {
+            const urlInput = document.getElementById('urlInput').value;
+            const urls = urlInput.split('\n').filter(url => url.trim() !== '');
+            
+            if (urls.length === 0) {
+                alert('Please paste at least one URL');
+                return;
+            }
+            
+            displayImages(urls);
+        }
+        
+        // Display images from URL array
+        function displayImages(urls) {
+            const grid = document.getElementById('imageGrid');
+            const status = document.getElementById('status');
+            
+            grid.innerHTML = '';
+            status.textContent = `Loading ${urls.length} images...`;
+            
+            let loaded = 0;
+            let failed = 0;
+            
+            urls.forEach((url, index) => {
+                const item = document.createElement('div');
+                item.className = 'image-item';
+                
+                const img = document.createElement('img');
+                img.src = url.trim();
+                img.alt = `Image ${index + 1}`;
+                
+                img.onload = () => {
+                    loaded++;
+                    updateStatus(loaded, failed, urls.length);
+                };
+                
+                img.onerror = () => {
+                    failed++;
+                    item.classList.add('error-item');
+                    img.alt = 'Failed to load';
+                    updateStatus(loaded, failed, urls.length);
+                };
+                
+                img.onclick = () => openModal(url.trim());
+                
+                const label = document.createElement('div');
+                label.className = 'label';
+                label.textContent = `Image ${index + 1}`;
+                
+                item.appendChild(img);
+                item.appendChild(label);
+                grid.appendChild(item);
+            });
+        }
+        
+        function updateStatus(loaded, failed, total) {
+            const status = document.getElementById('status');
+            if (loaded + failed === total) {
+                status.textContent = `✅ Loaded ${loaded} of ${total} images${failed > 0 ? ` (${failed} failed)` : ''}`;
+            } else {
+                status.textContent = `Loading ${loaded} of ${total} images...`;
+            }
+        }
+        
+        function clearImages() {
+            document.getElementById('imageGrid').innerHTML = '';
+            document.getElementById('status').textContent = '';
+        }
+        
+        function openModal(url) {
+            const modal = document.getElementById('myModal');
+            const modalImg = document.getElementById('modalImg');
+            modal.style.display = "block";
+            modalImg.src = url;
+        }
+        
+        function closeModal() {
+            document.getElementById('myModal').style.display = "none";
+        }
+        
+        // Keyboard shortcut: ESC to close modal
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
+

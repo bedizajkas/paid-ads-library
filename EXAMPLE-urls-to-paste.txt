@@ -1,0 +1,17 @@
+// Copy this template and paste your URLs in the PERMANENT_URLS section of the HTML file
+
+const PERMANENT_URLS = [
+    "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/ac68d692-34bd-47a2-b3e4-e27f9830b056.png",
+    "https://your-second-url.png",
+    "https://your-third-url.png",
+    "https://your-fourth-url.png",
+    // ... add more URLs here
+    // Remember: each URL needs quotes and a comma at the end!
+];
+
+// 💡 TIPS:
+// - Each URL must be in "quotes"
+// - Each URL must end with a comma (except the last one)
+// - You can add comments with //
+// - Make sure to keep the [ at the start and ]; at the end
+
