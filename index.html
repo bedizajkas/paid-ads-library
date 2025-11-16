@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Killer Paid Ads Library | Powered by Relevance AI</title>
+    <title>🔥 Killer - And Not So Killer - Paid Ads Library | Powered by Relevance AI</title>
     
     <!-- Favicon - Relevance AI Logo -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='grad' x1='0%25' y1='0%25' x2='100%25' y2='100%25'%3E%3Cstop offset='0%25' style='stop-color:%235e72e4;stop-opacity:1' /%3E%3Cstop offset='100%25' style='stop-color:%23825ee4;stop-opacity:1' /%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='20' fill='url(%23grad)'/%3E%3Ccircle cx='35' cy='35' r='18' fill='white' opacity='0.9'/%3E%3Ccircle cx='55' cy='55' r='22' fill='white' opacity='0.7'/%3E%3C/svg%3E">
@@ -194,16 +194,153 @@
         .close:hover {
             color: #bbb;
         }
+        /* Tab Navigation */
+        .tabs {
+            background: white;
+            padding: 0;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            overflow: hidden;
+        }
+        .tab-button {
+            flex: 1;
+            padding: 20px;
+            background: white;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 4px solid transparent;
+            position: relative;
+        }
+        .tab-button:hover {
+            background: #f8f9ff;
+            color: #5e72e4;
+        }
+        .tab-button.active {
+            background: linear-gradient(135deg, #5e72e4 0%, #825ee4 100%);
+            color: white;
+            border-bottom-color: #5e72e4;
+            box-shadow: none;
+        }
+        .tab-button .count {
+            display: inline-block;
+            margin-left: 8px;
+            padding: 2px 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            font-size: 13px;
+        }
+        .tab-button:not(.active) .count {
+            background: #e0e7ff;
+            color: #5e72e4;
+        }
+        /* Checkbox Styling */
+        .image-checkbox-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+            padding: 8px;
+            background: #f8f9ff;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .image-checkbox-container:hover {
+            background: #e0e7ff;
+        }
+        .image-checkbox-container input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            cursor: pointer;
+            accent-color: #38ef7d;
+        }
+        .image-checkbox-container label {
+            font-size: 13px;
+            color: #5e72e4;
+            font-weight: 600;
+            cursor: pointer;
+            user-select: none;
+        }
+        .image-checkbox-container.checked {
+            background: #f0fdf4;
+            border: 2px solid #38ef7d;
+        }
+        .image-checkbox-container.checked label {
+            color: #11998e;
+        }
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+        }
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+        .empty-state h2 {
+            font-size: 28px;
+            margin: 0 0 12px 0;
+            font-weight: 600;
+        }
+        .empty-state p {
+            font-size: 16px;
+            opacity: 0.9;
+            margin: 0 0 24px 0;
+        }
+        .empty-state button {
+            background: white;
+            color: #5e72e4;
+            padding: 12px 24px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        .empty-state button:hover {
+            background: #f8f9ff;
+        }
+        /* Smooth transitions */
+        .image-item {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .image-item.removing {
+            animation: fadeOut 0.3s ease-out forwards;
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.8); }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>🔥 Killer Paid Ads Library</h1>
+        <h1>🔥 Killer - And Not So Killer - Paid Ads Library</h1>
         <div class="subtitle">View all your AI-generated ad creatives in one place</div>
         <div class="powered">Powered by Relevance AI</div>
     </div>
     
     <div class="container">
+    <!-- Tab Navigation -->
+    <div class="tabs">
+        <button class="tab-button active" onclick="switchTab('all')" id="tab-all">
+            📚 All Images <span class="count" id="count-all">91</span>
+        </button>
+        <button class="tab-button" onclick="switchTab('nottobad')" id="tab-nottobad">
+            ✨ Not Too Bad <span class="count" id="count-nottobad">0</span>
+        </button>
+    </div>
+    
     <div class="controls">
         <h3>Paste Image URLs (one per line):</h3>
         <textarea id="urlInput" placeholder="https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/image1.png&#10;https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/image2.png&#10;https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/image3.png&#10;..."></textarea>
@@ -243,6 +380,12 @@
     </div>
 
     <script>
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
+        let currentTab = 'all';
+        let checkedImages = new Set();
+        
         // 🎯 FOR HOSTING: Paste your URLs here to embed them permanently
         // This makes them load for EVERYONE who visits your hosted link!
         const PERMANENT_URLS = [
@@ -338,25 +481,121 @@
             "https://userdata-f1db6c.stack.tryrelevance.com/conversation/files/37e96359-708b-4407-ad2e-7345924f6248.png"
         ];
         
-        // Auto-load URLs on page load (checks embedded URLs first, then saved URLs)
+        // ============================================
+        // INITIALIZATION
+        // ============================================
         window.addEventListener('load', function() {
-            // Priority 1: Check for embedded permanent URLs (for hosted version)
+            // Load checked images from localStorage
+            loadCheckedImages();
+            
+            // Load images based on priority
             if (PERMANENT_URLS.length > 0 && PERMANENT_URLS[0] && PERMANENT_URLS[0].startsWith('http')) {
                 document.getElementById('urlInput').value = PERMANENT_URLS.join('\n');
-                document.getElementById('status').textContent = `Loading ${PERMANENT_URLS.length} images...`;
-                displayImages(PERMANENT_URLS);
-                return;
+                renderCurrentView();
+            } else {
+                const savedUrls = getSavedUrls();
+                if (savedUrls.length > 0) {
+                    document.getElementById('urlInput').value = savedUrls.join('\n');
+                    renderCurrentView();
+                    showSavedStatus(`✅ ${savedUrls.length} images loaded from saved collection`, 'success');
+                }
             }
             
-            // Priority 2: Check for saved URLs in localStorage (for local use)
-            const savedUrls = getSavedUrls();
-            if (savedUrls.length > 0) {
-                document.getElementById('urlInput').value = savedUrls.join('\n');
-                document.getElementById('status').textContent = `Loading ${savedUrls.length} saved images...`;
-                displayImages(savedUrls);
-                showSavedStatus(`✅ ${savedUrls.length} images loaded from saved collection`, 'success');
-            }
+            updateTabCounts();
         });
+        
+        // ============================================
+        // TAB MANAGEMENT
+        // ============================================
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Update tab UI
+            document.getElementById('tab-all').classList.remove('active');
+            document.getElementById('tab-nottobad').classList.remove('active');
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            
+            // Render appropriate view
+            renderCurrentView();
+        }
+        
+        function renderCurrentView() {
+            const imagesToShow = currentTab === 'all' 
+                ? PERMANENT_URLS 
+                : PERMANENT_URLS.filter(url => checkedImages.has(url));
+            
+            if (imagesToShow.length === 0 && currentTab === 'nottobad') {
+                showEmptyState();
+            } else {
+                displayImages(imagesToShow);
+            }
+        }
+        
+        function showEmptyState() {
+            const grid = document.getElementById('imageGrid');
+            const status = document.getElementById('status');
+            
+            status.textContent = '';
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <div class="icon">😕</div>
+                    <h2>No images marked yet</h2>
+                    <p>Switch to "All Images" tab and check some images to see them here!</p>
+                    <button onclick="switchTab('all')">📚 Go to All Images</button>
+                </div>
+            `;
+        }
+        
+        function updateTabCounts() {
+            document.getElementById('count-all').textContent = PERMANENT_URLS.length;
+            document.getElementById('count-nottobad').textContent = checkedImages.size;
+        }
+        
+        // ============================================
+        // CHECKBOX MANAGEMENT
+        // ============================================
+        function loadCheckedImages() {
+            const saved = localStorage.getItem('notTooBadImages');
+            if (saved) {
+                try {
+                    const urls = JSON.parse(saved);
+                    checkedImages = new Set(urls);
+                } catch (e) {
+                    console.error('Error loading checked images:', e);
+                    checkedImages = new Set();
+                }
+            }
+        }
+        
+        function saveCheckedImages() {
+            localStorage.setItem('notTooBadImages', JSON.stringify([...checkedImages]));
+        }
+        
+        function toggleImageCheck(imageUrl, checkbox) {
+            const isChecked = checkbox.checked;
+            const imageItem = checkbox.closest('.image-item');
+            
+            if (isChecked) {
+                checkedImages.add(imageUrl);
+            } else {
+                checkedImages.delete(imageUrl);
+                
+                // If on "Not Too Bad" tab, remove the card with animation
+                if (currentTab === 'nottobad') {
+                    imageItem.classList.add('removing');
+                    setTimeout(() => {
+                        imageItem.remove();
+                        // Check if no images left
+                        if (checkedImages.size === 0) {
+                            showEmptyState();
+                        }
+                    }, 300);
+                }
+            }
+            
+            saveCheckedImages();
+            updateTabCounts();
+        }
         
         // Save URLs to browser storage
         function saveUrls() {
@@ -431,6 +670,9 @@
             }, 5000);
         }
         
+        // ============================================
+        // IMAGE LOADING & DISPLAY
+        // ============================================
         function loadImages() {
             const urlInput = document.getElementById('urlInput').value;
             const urls = urlInput.split('\n').filter(url => url.trim() !== '');
@@ -440,10 +682,15 @@
                 return;
             }
             
-            displayImages(urls);
+            // Update PERMANENT_URLS for this session
+            PERMANENT_URLS.length = 0;
+            PERMANENT_URLS.push(...urls);
+            
+            renderCurrentView();
+            updateTabCounts();
         }
         
-        // Display images from URL array
+        // Display images from URL array with checkboxes
         function displayImages(urls) {
             const grid = document.getElementById('imageGrid');
             const status = document.getElementById('status');
@@ -457,7 +704,9 @@
             urls.forEach((url, index) => {
                 const item = document.createElement('div');
                 item.className = 'image-item';
+                item.setAttribute('data-url', url.trim());
                 
+                // Image element
                 const img = document.createElement('img');
                 img.src = url.trim();
                 img.alt = `Image ${index + 1}`;
@@ -476,13 +725,46 @@
                 
                 img.onclick = () => openModal(url.trim());
                 
-                const label = document.createElement('div');
-                label.className = 'label';
-                label.textContent = `Image ${index + 1}`;
+                // Checkbox container
+                const checkboxContainer = document.createElement('div');
+                checkboxContainer.className = 'image-checkbox-container';
+                const isChecked = checkedImages.has(url.trim());
+                if (isChecked) {
+                    checkboxContainer.classList.add('checked');
+                }
                 
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.id = `checkbox-${index}`;
+                checkbox.checked = isChecked;
+                checkbox.onchange = () => toggleImageCheck(url.trim(), checkbox);
+                
+                const label = document.createElement('label');
+                label.htmlFor = `checkbox-${index}`;
+                label.textContent = 'Not Too Bad';
+                
+                checkboxContainer.appendChild(checkbox);
+                checkboxContainer.appendChild(label);
+                
+                // Label with number
+                const numberLabel = document.createElement('div');
+                numberLabel.className = 'label';
+                numberLabel.textContent = `Image ${index + 1}`;
+                
+                // Assemble card
                 item.appendChild(img);
-                item.appendChild(label);
+                item.appendChild(checkboxContainer);
+                item.appendChild(numberLabel);
                 grid.appendChild(item);
+                
+                // Update checkbox container styling on change
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        checkboxContainer.classList.add('checked');
+                    } else {
+                        checkboxContainer.classList.remove('checked');
+                    }
+                });
             });
         }
         
