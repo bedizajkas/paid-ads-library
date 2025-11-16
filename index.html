@@ -497,6 +497,8 @@
         async function loadCheckedImagesFromAirtable() {
             const url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`;
             
+            console.log('🔄 Loading from Airtable...');
+            
             try {
                 const response = await fetch(url, {
                     headers: {
@@ -504,29 +506,53 @@
                     }
                 });
                 
+                console.log('📡 Airtable response status:', response.status);
+                
                 if (!response.ok) {
-                    throw new Error(`Airtable API error: ${response.status}`);
+                    const errorText = await response.text();
+                    console.error('❌ Airtable API error:', response.status, errorText);
+                    throw new Error(`Airtable API error: ${response.status} - ${errorText}`);
                 }
                 
                 const data = await response.json();
+                console.log('📦 Airtable data received:', data.records ? data.records.length : 0, 'records');
+                
                 const urls = data.records.map(record => record.fields.image_url).filter(Boolean);
                 checkedImages = new Set(urls);
                 
                 // Also save to localStorage as cache
                 saveCheckedImagesToLocalStorage();
                 
-                console.log(`✅ Loaded ${checkedImages.size} checked images from Airtable`);
+                console.log(`✅ Successfully loaded ${checkedImages.size} checked images from Airtable`);
+                
+                // Show success message
+                const status = document.getElementById('status');
+                if (status) {
+                    status.textContent = `✅ Synced ${checkedImages.size} "Not Too Bad" selections from Airtable`;
+                }
+                
                 return true;
             } catch (error) {
-                console.error('Error loading from Airtable:', error);
+                console.error('❌ Failed to load from Airtable:', error);
+                console.log('💾 Falling back to localStorage...');
+                
                 // Fallback to localStorage
                 loadCheckedImagesFromLocalStorage();
+                
+                // Show warning message
+                const status = document.getElementById('status');
+                if (status && checkedImages.size > 0) {
+                    status.textContent = `⚠️ Using local data (${checkedImages.size} selections). Sync may be offline.`;
+                }
+                
                 return false;
             }
         }
         
         async function addImageToAirtable(imageUrl) {
             const url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`;
+            
+            console.log('➕ Adding to Airtable:', imageUrl.substring(0, 60) + '...');
             
             try {
                 const response = await fetch(url, {
@@ -546,14 +572,19 @@
                     })
                 });
                 
+                console.log('📡 Add response status:', response.status);
+                
                 if (!response.ok) {
-                    throw new Error(`Airtable API error: ${response.status}`);
+                    const errorText = await response.text();
+                    console.error('❌ Add failed:', response.status, errorText);
+                    throw new Error(`Airtable API error: ${response.status} - ${errorText}`);
                 }
                 
-                console.log(`✅ Added to Airtable: ${imageUrl.substring(0, 50)}...`);
+                console.log(`✅ Successfully added to Airtable`);
                 return true;
             } catch (error) {
-                console.error('Error adding to Airtable:', error);
+                console.error('❌ Error adding to Airtable:', error);
+                alert(`⚠️ Could not sync to Airtable. Check console for details. Image saved locally.`);
                 return false;
             }
         }
