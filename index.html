@@ -381,10 +381,20 @@
 
     <script>
         // ============================================
+        // AIRTABLE CONFIGURATION
+        // ============================================
+        const AIRTABLE_CONFIG = {
+            baseId: 'appH225MnNuDNCFmB',
+            token: 'patMnnspORUU83AJO.01fed27b5dbf5ebe8e8dda867f95ef0a14304eb94255380bd5dc4bc1a399d595',
+            tableName: 'checked_images'
+        };
+        
+        // ============================================
         // STATE MANAGEMENT
         // ============================================
         let currentTab = 'all';
         let checkedImages = new Set();
+        let isLoadingFromAirtable = false;
         
         // 🎯 FOR HOSTING: Paste your URLs here to embed them permanently
         // This makes them load for EVERYONE who visits your hosted link!
@@ -482,22 +492,139 @@
         ];
         
         // ============================================
+        // AIRTABLE API FUNCTIONS
+        // ============================================
+        async function loadCheckedImagesFromAirtable() {
+            const url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`;
+            
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Airtable API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                const urls = data.records.map(record => record.fields.image_url).filter(Boolean);
+                checkedImages = new Set(urls);
+                
+                // Also save to localStorage as cache
+                saveCheckedImagesToLocalStorage();
+                
+                console.log(`✅ Loaded ${checkedImages.size} checked images from Airtable`);
+                return true;
+            } catch (error) {
+                console.error('Error loading from Airtable:', error);
+                // Fallback to localStorage
+                loadCheckedImagesFromLocalStorage();
+                return false;
+            }
+        }
+        
+        async function addImageToAirtable(imageUrl) {
+            const url = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}`;
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        records: [
+                            {
+                                fields: {
+                                    image_url: imageUrl
+                                }
+                            }
+                        ]
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`Airtable API error: ${response.status}`);
+                }
+                
+                console.log(`✅ Added to Airtable: ${imageUrl.substring(0, 50)}...`);
+                return true;
+            } catch (error) {
+                console.error('Error adding to Airtable:', error);
+                return false;
+            }
+        }
+        
+        async function removeImageFromAirtable(imageUrl) {
+            // First, find the record ID
+            const listUrl = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}?filterByFormula={image_url}='${imageUrl}'`;
+            
+            try {
+                const listResponse = await fetch(listUrl, {
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.token}`
+                    }
+                });
+                
+                if (!listResponse.ok) {
+                    throw new Error(`Airtable API error: ${listResponse.status}`);
+                }
+                
+                const data = await listResponse.json();
+                
+                if (data.records.length === 0) {
+                    console.log('Record not found in Airtable');
+                    return true;
+                }
+                
+                // Delete the record
+                const recordId = data.records[0].id;
+                const deleteUrl = `https://api.airtable.com/v0/${AIRTABLE_CONFIG.baseId}/${AIRTABLE_CONFIG.tableName}/${recordId}`;
+                
+                const deleteResponse = await fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${AIRTABLE_CONFIG.token}`
+                    }
+                });
+                
+                if (!deleteResponse.ok) {
+                    throw new Error(`Airtable API error: ${deleteResponse.status}`);
+                }
+                
+                console.log(`✅ Removed from Airtable: ${imageUrl.substring(0, 50)}...`);
+                return true;
+            } catch (error) {
+                console.error('Error removing from Airtable:', error);
+                return false;
+            }
+        }
+        
+        // ============================================
         // INITIALIZATION
         // ============================================
-        window.addEventListener('load', function() {
-            // Load checked images from localStorage
-            loadCheckedImages();
+        window.addEventListener('load', async function() {
+            // Show loading state
+            document.getElementById('status').textContent = '🔄 Loading checked images...';
+            
+            // Load checked images from Airtable (with localStorage fallback)
+            isLoadingFromAirtable = true;
+            await loadCheckedImagesFromAirtable();
+            isLoadingFromAirtable = false;
             
             // Load images based on priority
             if (PERMANENT_URLS.length > 0 && PERMANENT_URLS[0] && PERMANENT_URLS[0].startsWith('http')) {
                 document.getElementById('urlInput').value = PERMANENT_URLS.join('\n');
                 renderCurrentView();
             } else {
-                const savedUrls = getSavedUrls();
-                if (savedUrls.length > 0) {
-                    document.getElementById('urlInput').value = savedUrls.join('\n');
+            const savedUrls = getSavedUrls();
+            if (savedUrls.length > 0) {
+                document.getElementById('urlInput').value = savedUrls.join('\n');
                     renderCurrentView();
-                    showSavedStatus(`✅ ${savedUrls.length} images loaded from saved collection`, 'success');
+                showSavedStatus(`✅ ${savedUrls.length} images loaded from saved collection`, 'success');
                 }
             }
             
@@ -554,31 +681,40 @@
         // ============================================
         // CHECKBOX MANAGEMENT
         // ============================================
-        function loadCheckedImages() {
+        function loadCheckedImagesFromLocalStorage() {
             const saved = localStorage.getItem('notTooBadImages');
             if (saved) {
                 try {
                     const urls = JSON.parse(saved);
                     checkedImages = new Set(urls);
+                    console.log(`✅ Loaded ${checkedImages.size} checked images from localStorage (fallback)`);
                 } catch (e) {
-                    console.error('Error loading checked images:', e);
+                    console.error('Error loading checked images from localStorage:', e);
                     checkedImages = new Set();
                 }
             }
         }
         
-        function saveCheckedImages() {
+        function saveCheckedImagesToLocalStorage() {
             localStorage.setItem('notTooBadImages', JSON.stringify([...checkedImages]));
         }
         
-        function toggleImageCheck(imageUrl, checkbox) {
+        async function toggleImageCheck(imageUrl, checkbox) {
             const isChecked = checkbox.checked;
             const imageItem = checkbox.closest('.image-item');
             
             if (isChecked) {
+                // Add to local state
                 checkedImages.add(imageUrl);
+                
+                // Sync to Airtable
+                await addImageToAirtable(imageUrl);
             } else {
+                // Remove from local state
                 checkedImages.delete(imageUrl);
+                
+                // Sync to Airtable
+                await removeImageFromAirtable(imageUrl);
                 
                 // If on "Not Too Bad" tab, remove the card with animation
                 if (currentTab === 'nottobad') {
@@ -593,7 +729,8 @@
                 }
             }
             
-            saveCheckedImages();
+            // Save to localStorage as cache
+            saveCheckedImagesToLocalStorage();
             updateTabCounts();
         }
         
